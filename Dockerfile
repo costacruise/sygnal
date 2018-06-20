@@ -1,18 +1,14 @@
-FROM docker.io/python:2-alpine3.7
-
-RUN apk add --no-cache --virtual build-base
+FROM python:2-alpine3.7
 
 COPY . /sygnal
-
 WORKDIR /sygnal
-
 RUN mkdir var
 
-RUN pip install --upgrade pip \
+RUN apk add --no-cache --virtual build-base \
+ && pip install --upgrade pip \
  && pip install gunicorn \
- && pip install .
-
-RUN apk del --purge build-base
+ && pip install . \
+ && apk del --purge build-base
 
 COPY ./gunicorn_config.py.sample /sygnal/gunicorn_config.py
 COPY ./sygnal.conf.sample /sygnal/sygnal.conf
